@@ -101,6 +101,25 @@ so you don't need to restart the script if you make changes. Remember to delete 
 property set, if you are going to modify the `schedules.json` on the fly, because they will be triggered again if you 
 don't delete them from the file :)
 
+`after` and `until` can handle asterisks also, you can se for example: 
+
+#### Execute only once per day after 15:00, every day on july 2017, until 20th of july 18:00:
+
+    {
+        "command": "say This message was timed to execute only once per day after 00:00, every day on july 2017 after 15:00, until 20th of july 18:00",
+        "after": "2017-07-* 15:00",
+        "until": "2017-07-20 18:00"
+    }
+
+#### Execute after 08:00 until 10:00 every 15 seconds, on 24th of december every year
+
+    {
+        "command": "say This message was timed to execute after 08:00 until 10:00 every 15 seconds, on 24th of december every year",
+        "after": "*-12-24 08:00",
+        "interval": 0.25,
+        "until": "*-12-24 10:00"
+    }
+
 #### Exiting the client
 
 Simply press **CTRL + C** and the scheduler will exit.

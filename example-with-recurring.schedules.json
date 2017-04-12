@@ -1,31 +1,31 @@
 [
   {
-    "command": "say This message was timed to execute only once per day after 00:00, every day on april 2017",
-    "after": "2017-04-* 00:00",
+    "command": "say This message was timed to execute only once per day, every day on april 2017 after 08:00",
+    "after": "2017-04-* 08:00",
     "until": "2017-05-01 00:00"
   },
   {
-    "command": "say This message was timed to execute only once per day after 00:00, every day on may 2017",
+    "command": "say This message was timed to execute only once per day, every day on may 2017 after 00:00",
     "after": "2017-05-* 00:00",
     "until": "2017-06-01 00:00"
   },
   {
-    "command": "say This message was timed to execute only once per day after 00:00, every day on june 2017",
-    "after": "2017-06-* 00:00",
+    "command": "say This message was timed to execute only once per day, every day on june 2017 after 10:00",
+    "after": "2017-06-* 10:00",
     "until": "2017-07-01 00:00"
   },
   {
-    "command": "say This message was timed to execute only once per day after 00:00, every day on july 2017",
-    "after": "2017-07-* 00:00",
-    "until": "2017-08-01 00:00"
+    "command": "say This message was timed to execute only once per day, every day on july 2017 after 15:00, until 20th of july 18:00",
+    "after": "2017-07-* 15:00",
+    "until": "2017-07-20 18:00"
   },
   {
-    "command": "say This message was timed to execute only once per day after 00:00, every day on september 2017",
+    "command": "say This message was timed to execute only once per day, every day on september 2017 after 00:00",
     "after": "2017-09-* 00:00",
     "until": "2017-10-01 00:00"
   },
   {
-    "command": "say This message was timed to execute only once per day after 00:00, on 24th of december every year",
+    "command": "say This message was timed to execute only once per day, on 24th of december every year after 00:00",
     "after": "*-12-24 00:00",
     "until": "*-12-25 00:00"
   },
