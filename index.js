@@ -30,6 +30,9 @@ var minute = 60 * second;
 var offset = 5;
 var lastIndex = 1000;
 var callbacks = new Map();
+var currentTime;
+var currentDate;
+var dayChanged = false;
 
 function text(text) {
     console.log('[' + new Date + '] ' + text);
@@ -95,7 +98,15 @@ function readSchedules(file) {
 
 function loadSchedules() {
     var newSchedules = readSchedules('./schedules.json');
-    if (JSON.stringify(schedules) !== JSON.stringify(newSchedules)) {
+    dayChanged = (new Date(currentDate) < new Date());
+    if (
+        (JSON.stringify(schedules) !== JSON.stringify(newSchedules))
+        || dayChanged
+    ) {
+        if (dayChanged) {
+            text('Day changed, reloading schedules.');
+            setCurrentDate();
+        }
         if (!first) {
             text('New schedules loaded!');
             clearTimers();
@@ -131,13 +142,62 @@ function executeCommand(schedule) {
     });
 }
 
-function checkAfter() {
+function checkIfAsterisk(text, value) {
+    if (value === '*') {
+        if (text === 'year') {
+            return new Date().getFullYear();
+        }
+        else if (text === 'month') {
+            return prefixWithZero(new Date().getMonth() + 1);
+        }
+        else if (text === 'day') {
+            return prefixWithZero(new Date().getDate());
+        }
+    }
+    else {
+        return value;
+    }
+}
+
+function prefixWithZero(value) {
+    return ("0" + value).slice(-2);
+}
+
+function hasAsterisk(value) {
+    var regex = /\*/;
+
+    return !!regex.exec(value);
+}
+
+function parseTime(time) {
+    var returnTime = time;
+
+    var regex = /(\d+|\*)-(\d+|\*)-(\d+|\*) (\d+):(\d+)(:(\d+))?/;
+    var matches = regex.exec(time);
+    if (matches) {
+        var year = checkIfAsterisk('year', matches[1]);
+        var month = checkIfAsterisk('month', matches[2]);
+        var day = checkIfAsterisk('day', matches[3]);
+        var hour = prefixWithZero(matches[4]);
+        var minute = prefixWithZero(matches[5]);
+        var second = prefixWithZero(matches[7] || 0);
+
+        returnTime = year + '-' + month + '-' + day + ' ' + hour + ':' + minute + ':' + second;
+    }
+
+    return new Date(returnTime);
+}
+
+function checkTimed() {
     toBeExecuted.forEach(function(schedule) {
-        if (schedule.after && new Date(schedule.after) < new Date()) {
+        if (
+            (schedule.after && parseTime(schedule.after) <= new Date() && !schedule.until)
+            || (schedule.after && parseTime(schedule.after) <= new Date() && parseTime(schedule.until) > new Date())
+        ) {
             if (schedule.interval) {
                 if (
                     !schedule.until
-                    || (schedule.until && new Date(schedule.until) > new Date())
+                    || (schedule.until && parseTime(schedule.until) > new Date())
                 ) {
                     createTimer(schedule, executeTimerInstantly);
                     if (schedule.until) {
@@ -153,7 +213,7 @@ function checkAfter() {
     });
 
     toBeCleared.forEach(function(schedule){
-        if (schedule.until && new Date(schedule.until) < new Date()) {
+        if (schedule.until && parseTime(schedule.until) < new Date()) {
             clearInterval(timers.get(schedule));
             toBeCleared.delete(schedule);
         }
@@ -184,9 +244,16 @@ function startMainInterval() {
     loadSchedules();
     setInterval(function() {
         loadSchedules();
-        checkAfter();
+        checkTimed();
     }, checkNewSchedules * second);
 }
+
+function setCurrentDate() {
+    currentTime = new Date();
+    currentDate = currentTime.getFullYear() +'-'+prefixWithZero(new Date().getMonth() + 1) +'-'+prefixWithZero(new Date().getDate()) +' 23:59:59';
+}
+
+setCurrentDate();
 
 rconConnect()
     .then(function () {
