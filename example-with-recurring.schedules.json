@@ -34,5 +34,11 @@
     "after": "*-12-24 08:00",
     "interval": 0.25,
     "until": "*-12-24 10:00"
+  },
+  {
+    "command": "say This message was timed to execute every 15 seconds, on the first day of every month, every year",
+    "after": "*-*-01 00:00",
+    "interval": 0.25,
+    "until": "*-*-02 00:00"
   }
 ]
