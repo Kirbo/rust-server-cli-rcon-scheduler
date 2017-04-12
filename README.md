@@ -10,7 +10,7 @@ https://nodejs.org/en/download/package-manager/
 Tested to be working with Node.js version >= `v0.12.18`, but I'm pretty sure this should work with pretty much any
 version of Node.js.
 
-#### Installing the rust-server-cli-rcon
+#### Installing the rust-server-cli-rcon-scheduler
 
     # Clone this repository
     git clone https://github.com/kirbo/rust-server-cli-rcon-scheduler.git
