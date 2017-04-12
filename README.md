@@ -111,13 +111,22 @@ don't delete them from the file :)
         "until": "2017-07-20 18:00"
     }
 
-#### Execute after 08:00 until 10:00 every 15 seconds, on 24th of december every year
+#### Execute after 08:00 until 10:00 every 15 seconds, on 24th of december every year:
 
     {
         "command": "say This message was timed to execute after 08:00 until 10:00 every 15 seconds, on 24th of december every year",
         "after": "*-12-24 08:00",
         "interval": 0.25,
         "until": "*-12-24 10:00"
+    }
+    
+#### Execute every 15 seconds, on the first day of every month, every year:
+
+    {
+        "command": "say This message was timed to execute every 15 seconds, on the first day of every month, every year",
+        "after": "*-*-01 00:00",
+        "interval": 0.25,
+        "until": "*-*-02 00:00"
     }
 
 #### Exiting the client
