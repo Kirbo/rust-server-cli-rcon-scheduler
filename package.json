@@ -1,0 +1,15 @@
+{
+  "name": "rust-server-cli-rcon-scheduler",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "promise": "7.1.1",
+    "websocket": "1.0.24"
+  }
+}
