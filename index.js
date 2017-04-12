@@ -4,8 +4,15 @@ var fs = require('fs');
 
 var rconConfig = require('./rcon.json');
 
-// Should the commands be executed on startup and instantly after the new schedules have been loaded? `true` / `false`
-var executeOnStartAndAfterLoad = false;
+
+// Should the commands be executed instantly on startup? `true` / `false`
+var executeOnStart = false;
+
+// Should the commands be executed instantly after the new schedules have been loaded? `true` / `false`
+var executeAfterLoad = false;
+
+// Should the timed commands be executed instantly? `true` / `false`
+var executeTimerInstantly = true;
 
 // Value in seconds: interval for checking changes in `schedules.json` and executing the commands with `after` property.
 var checkNewSchedules = 10;
@@ -14,18 +21,18 @@ var checkNewSchedules = 10;
 /* Don't touch anything below unless you know what you're doing */
 var rcon;
 var schedules = [];
-var timers = [];
+var timers = new Map();
 var toBeExecuted = new Set();
+var toBeCleared = new Set();
 var first = true;
 var second = 1000;
 var minute = 60 * second;
 var offset = 5;
+var lastIndex = 1000;
+var callbacks = new Map();
 
-function text(text, border) {
+function text(text) {
     console.log('[' + new Date + '] ' + text);
-    if (border) {
-        console.log('****************' + "\n");
-    }
 }
 
 function rconConnect() {
@@ -56,14 +63,25 @@ function rconConnect() {
             }, 5 * 1000);
             count++;
         };
+        rcon.onmessage = function (e) {
+            var data = JSON.parse(e.data);
+
+            if (data.Message && data.Identifier > 1000) {
+                text('Response for command: '+callbacks.get(data.Identifier));
+                console.log(data.Message);
+            }
+            callbacks.delete(data.Identifier);
+        };
     });
 }
 
 function rconCmd(command) {
     text('RCON: Sending command: ' + command);
     return new Promise(function (resolve, reject) {
+        lastIndex++;
+        callbacks.set(lastIndex, command);
         rcon.send(JSON.stringify({
-            Identifier: -1,
+            Identifier: lastIndex,
             Message: command,
             Name: "WebRcon"
         }));
@@ -90,21 +108,25 @@ function loadSchedules() {
     }
 }
 
-function createTimer(schedule) {
+function createTimer(schedule, executeInstantly) {
     setTimeout(function() {
-        if (executeOnStartAndAfterLoad) {
+        if (
+            (first && executeOnStart)
+            || (!first && executeAfterLoad)
+            || executeInstantly
+        ) {
             executeCommand(schedule);
         }
         var timer = setInterval(function() {
             executeCommand(schedule);
         }, schedule.interval * minute);
-        timers.push(timer);
+        timers.set(schedule, timer);
     }, offset * 1000);
 }
 
 function executeCommand(schedule) {
     return new Promise(function (resolve, reject) {
-        rconCmd(schedule.command).then(function () {
+        rconCmd(schedule.command).then(function (response) {
             resolve(true);
         });
     });
@@ -113,15 +135,35 @@ function executeCommand(schedule) {
 function checkAfter() {
     toBeExecuted.forEach(function(schedule) {
         if (schedule.after && new Date(schedule.after) < new Date()) {
-            executeCommand(schedule);
+            if (schedule.interval) {
+                if (
+                    !schedule.until
+                    || (schedule.until && new Date(schedule.until) > new Date())
+                ) {
+                    createTimer(schedule, executeTimerInstantly);
+                    if (schedule.until) {
+                        toBeCleared.add(schedule);
+                    }
+                }
+            }
+            else {
+                executeCommand(schedule);
+            }
             toBeExecuted.delete(schedule);
         }
     });
+
+    toBeCleared.forEach(function(schedule){
+        if (schedule.until && new Date(schedule.until) < new Date()) {
+            clearInterval(timers.get(schedule));
+            toBeCleared.delete(schedule);
+        }
+    })
 }
 
 function createTimers() {
     schedules.map(function(schedule) {
-        if (schedule.interval) {
+        if (schedule.interval && !schedule.after) {
             createTimer(schedule);
         }
         else if (schedule.after) {
@@ -132,7 +174,8 @@ function createTimers() {
 
 function clearTimers() {
     toBeExecuted = new Set();
-    timers.map(function(timer) {
+    toBeCleared = new Set();
+    timers.forEach(function(timer) {
         clearInterval(timer);
     });
 }

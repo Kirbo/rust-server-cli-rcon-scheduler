@@ -1,0 +1,41 @@
+[
+  {
+    "command": "say This message was timed to execute only once after date and time: 2017-04-12 20:03",
+    "after": "2017-04-12 20:03"
+  },
+  {
+    "command": "say This message was timed to start an interval with 2 minutes, after date and time: 2017-04-12 20:01",
+    "after": "2017-04-12 20:01",
+    "interval": 2
+  },
+  {
+    "command": "say This message was timed to start an interval with 1 minute, after date and time: 2017-04-12 20:05, until 20:10",
+    "after": "2017-04-12 20:05",
+    "interval": 1,
+    "until": "2017-04-12 20:10"
+  },
+  {
+    "command": "say 1 minute has passed",
+    "interval": 1
+  },
+  {
+    "command": "say 5 minutes has passed",
+    "interval": 5
+  },
+  {
+    "command": "say 10 minutes has passed",
+    "interval": 10
+  },
+  {
+    "command": "say MERRY CHRISTMAS!",
+    "after": "2017-12-24 00:00:00"
+  },
+  {
+    "command": "say MERRY CHRISTMAS!",
+    "after": "2017-12-24 00:00:00"
+  },
+  {
+    "command": "say HAPPY NEW YEAR!",
+    "after": "2017-12-31 23:59:00"
+  }
+]

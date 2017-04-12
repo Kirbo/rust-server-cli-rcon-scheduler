@@ -1,0 +1,53 @@
+[
+  {
+    "command": "say 1 second has passed",
+    "interval": 0.01666666666667
+  },
+  {
+    "command": "say 30 seconds has passed",
+    "interval": 0.5
+  },
+  {
+    "command": "say 1 minute has passed",
+    "interval": 1
+  },
+  {
+    "command": "players",
+    "interval": 1
+  },
+  {
+    "command": "status",
+    "interval": 5
+  },
+  {
+    "command": "serverinfo",
+    "interval": 15
+  },
+  {
+    "command": "say This message was timed to start an interval with 2 minutes, after date and time: 2017-04-12 19:40",
+    "after": "2017-04-12 19:40",
+    "interval": 2
+  },
+  {
+    "command": "say This message was timed to start an interval with 1 minute, after date and time: 2017-04-12 19:45, until 19:50",
+    "after": "2017-04-12 19:45",
+    "interval": 1,
+    "until": "2017-04-12 19:50"
+  },
+  {
+    "command": "say This message was timed to execute only one at specified date and time: 2017-06-01 18:00",
+    "after": "2017-04-12 18:00"
+  },
+  {
+    "command": "say This message was timed to execute only one at specified date and time: 2017-06-01 18:30",
+    "after": "2017-04-12 18:30"
+  },
+  {
+    "command": "say MERRY CHRISTMAS!",
+    "after": "2017-12-24 00:00:00"
+  },
+  {
+    "command": "say HAPPY NEW YEAR!",
+    "after": "2017-12-31 23:59:00"
+  }
+]

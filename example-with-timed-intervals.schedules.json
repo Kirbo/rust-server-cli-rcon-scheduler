@@ -1,0 +1,13 @@
+[
+  {
+    "command": "say This message was timed to start an interval with 2 minutes, after date and time: 2017-04-12 19:40",
+    "after": "2017-04-12 19:40",
+    "interval": 2
+  },
+  {
+    "command": "say This message was timed to start an interval with 1 minute, after date and time: 2017-04-12 19:45, until 19:50",
+    "after": "2017-04-12 19:45",
+    "interval": 1,
+    "until": "2017-04-12 19:50"
+  }
+]
