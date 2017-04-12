@@ -1,9 +1,14 @@
 var W3CWebSocket = require('websocket').w3cwebsocket;
 var Promise = require('promise');
-var rconConfig = require('./rcon.json');
 var fs = require('fs');
 
-var checkNewSchedules = 10; // Seconds
+var rconConfig = require('./rcon.json');
+
+// Should the commands be executed on startup and instantly after the new schedules have been loaded? `true` / `false`
+var executeOnStartAndAfterLoad = false;
+
+// Value in seconds: interval for checking changes in `schedules.json` and executing the commands with `after` property.
+var checkNewSchedules = 10;
 
 
 /* Don't touch anything below unless you know what you're doing */
@@ -80,13 +85,16 @@ function loadSchedules() {
         }
         schedules = newSchedules;
         createTimers();
-        text('New schedules initialised, waiting for '+offset+' before setting timers.');
+        text('New schedules initialised, waiting for '+offset+' seconds before setting timers.');
         first = false;
     }
 }
 
 function createTimer(schedule) {
     setTimeout(function() {
+        if (executeOnStartAndAfterLoad) {
+            executeCommand(schedule);
+        }
         var timer = setInterval(function() {
             executeCommand(schedule);
         }, schedule.interval * minute);
@@ -123,6 +131,7 @@ function createTimers() {
 }
 
 function clearTimers() {
+    toBeExecuted = new Set();
     timers.map(function(timer) {
         clearInterval(timer);
     });

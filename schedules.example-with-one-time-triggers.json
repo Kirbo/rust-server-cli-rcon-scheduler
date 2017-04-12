@@ -1,0 +1,14 @@
+[
+  {
+    "command": "say This message was timed to a specified date and time: 2017-04-12 18:00:00",
+    "after": "2017-04-12 18:00:00"
+  },
+  {
+    "command": "say MERRY CHRISTMAS!",
+    "after": "2017-12-24 00:00:00"
+  },
+  {
+    "command": "say HAPPY NEW YEAR!",
+    "after": "2017-12-31 23:59:00"
+  }
+]

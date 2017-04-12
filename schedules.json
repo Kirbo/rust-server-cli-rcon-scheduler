@@ -1,15 +1,11 @@
 [
   {
-    "command": "say 1 minute has passed since this message previously was sent",
-    "interval": 1
+    "command": "say 2 minutes has passed",
+    "interval": 2
   },
   {
-    "command": "say 5 minute has passed since this message previously was sent",
-    "interval": 5
-  },
-  {
-    "command": "say This message was timed to a specified date and time: 2017-04-12 17:15:00",
-    "after": "2017-04-12 17:15:00"
+    "command": "say This message was timed to a specified date and time: 2017-04-12 18:06:00",
+    "after": "2017-04-12 18:06:00"
   },
   {
     "command": "say MERRY CHRISTMAS!",
