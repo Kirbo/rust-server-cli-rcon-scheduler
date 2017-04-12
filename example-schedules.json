@@ -31,8 +31,22 @@
     "after": "2017-12-24 00:00:00"
   },
   {
-    "command": "say MERRY CHRISTMAS!",
-    "after": "2017-12-24 00:00:00"
+    "command": "say Don't play on Christmas :(",
+    "after": "2017-12-24 00:00:00",
+    "interval": 30,
+    "until": "2017-12-24 12:00:00"
+  },
+  {
+    "command": "say Come on, go do something else, its Christmas...",
+    "after": "2017-12-24 12:00:00",
+    "interval": 15,
+    "until": "2017-12-24 18:00:00"
+  },
+  {
+    "command": "say Seriously, go do something else, its Christmas...",
+    "after": "2017-12-24 18:00:00",
+    "interval": 5,
+    "until": "2017-12-24 23:59:59"
   },
   {
     "command": "say HAPPY NEW YEAR!",
