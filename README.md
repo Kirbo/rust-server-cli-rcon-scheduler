@@ -96,12 +96,7 @@ To be more precise, here are the examples:
         "until": "2017-12-24 23:59:59"
     }
 
-You can modify the `schedules.json` while the script is running. It will check for changes in the file every 10 seconds, 
-so you don't need to restart the script if you make changes. Remember to delete the messages which have the `after` 
-property set, if you are going to modify the `schedules.json` on the fly, because they will be triggered again if you 
-don't delete them from the file :)
-
-`after` and `until` can handle asterisks also, you can se for example: 
+### `after` and `until` can handle asterisks also, you can se for example: 
 
 #### Execute only once per day after 15:00, every day on july 2017, until 20th of july 18:00:
 
@@ -129,7 +124,13 @@ don't delete them from the file :)
         "until": "*-*-02 00:00"
     }
 
-#### Exiting the client
+
+You can modify the `schedules.json` while the script is running. It will check for changes in the file every 10 seconds, 
+so you don't need to restart the script if you make changes. Remember to delete the messages which have the `after` 
+property set, if you are going to modify the `schedules.json` on the fly, because they will be triggered again if you 
+don't delete them from the file :)
+
+#### Exiting the scheduler
 
 Simply press **CTRL + C** and the scheduler will exit.
 
