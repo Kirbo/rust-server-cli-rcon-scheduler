@@ -99,11 +99,10 @@ function loadSchedules() {
         if (!first) {
             text('New schedules loaded!');
             clearTimers();
-            text('Old timers cleared');
         }
         schedules = newSchedules;
         createTimers();
-        text('New schedules initialised, waiting for '+offset+' seconds before setting timers.');
+        text('New schedules initialised, waiting for '+offset+' seconds before setting schedules.');
         first = false;
     }
 }
@@ -178,6 +177,7 @@ function clearTimers() {
     timers.forEach(function(timer) {
         clearInterval(timer);
     });
+    text('Old schedules cleared');
 }
 
 function startMainInterval() {
