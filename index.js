@@ -33,6 +33,9 @@ var callbacks = new Map();
 var currentTime;
 var currentDate;
 var dayChanged = false;
+var count = 0;
+var connected = false;
+var mainInterval = null;
 
 function text(text) {
     console.log('[' + new Date + '] ' + text);
@@ -45,10 +48,18 @@ function rconConnect() {
         rcon = new W3CWebSocket('ws://' + rconConfig.host + ':' + rconConfig.port + '/' + rconConfig.pass);
         rcon.onopen = function () {
             text('RCON: Connected');
-            resolve(rcon);
+            text('Waiting for server to start...');
+            lastIndex = 1000;
+            connected = true;
+            serverStarted(function(){
+                text('Server is up and running.');
+                count = 0;
+                startMainInterval();
+                resolve(rcon);
+            })
         };
         rcon.onerror = function (error) {
-            if (count > 10) {
+            if (count > 100) {
                 text('RCON: Connection failed!');
                 reject(rcon);
             }
@@ -66,15 +77,42 @@ function rconConnect() {
             }, 5 * 1000);
             count++;
         };
+        rcon.onclose = function () {
+            if (connected === true) {
+                clearTimers();
+                rconConnect();
+                connected = false;
+                first = false;
+            }
+        };
         rcon.onmessage = function (e) {
             var data = JSON.parse(e.data);
 
-            if (data.Message && data.Identifier > 1000) {
-                text('Response for command: '+callbacks.get(data.Identifier));
-                console.log(data.Message);
+            if (data.Message) {
+                if (data.Identifier === 1001) {
+                    callbacks.get(data.Identifier)();
+                }
+                else if (data.Identifier > 1001) {
+                    text('Response for command: '+callbacks.get(data.Identifier));
+                    console.log(data.Message);
+                }
             }
+
             callbacks.delete(data.Identifier);
         };
+    });
+}
+
+function serverStarted(callback) {
+    return new Promise(function (resolve, reject) {
+        lastIndex++;
+        callbacks.set(lastIndex, callback);
+        rcon.send(JSON.stringify({
+            Identifier: lastIndex,
+            Message: 'serverinfo',
+            Name: "WebRcon"
+        }));
+        resolve(rcon);
     });
 }
 
@@ -124,6 +162,7 @@ function createTimer(schedule, executeInstantly) {
             (first && executeOnStart)
             || (!first && executeAfterLoad)
             || executeInstantly
+            || schedule.executeInstantly
         ) {
             executeCommand(schedule);
         }
@@ -142,7 +181,7 @@ function executeCommand(schedule) {
     });
 }
 
-function checkIfAsterisk(text, value) {
+function checkIfWildcard(text, value) {
     if (value === '*') {
         if (text === 'year') {
             return new Date().getFullYear();
@@ -163,21 +202,15 @@ function prefixWithZero(value) {
     return ("0" + value).slice(-2);
 }
 
-function hasAsterisk(value) {
-    var regex = /\*/;
-
-    return !!regex.exec(value);
-}
-
 function parseTime(time) {
     var returnTime = time;
 
     var regex = /(\d+|\*)-(\d+|\*)-(\d+|\*) (\d+):(\d+)(:(\d+))?/;
     var matches = regex.exec(time);
     if (matches) {
-        var year = checkIfAsterisk('year', matches[1]);
-        var month = checkIfAsterisk('month', matches[2]);
-        var day = checkIfAsterisk('day', matches[3]);
+        var year = checkIfWildcard('year', matches[1]);
+        var month = checkIfWildcard('month', matches[2]);
+        var day = checkIfWildcard('day', matches[3]);
         var hour = prefixWithZero(matches[4]);
         var minute = prefixWithZero(matches[5]);
         var second = prefixWithZero(matches[7] || 0);
@@ -237,12 +270,14 @@ function clearTimers() {
     timers.forEach(function(timer) {
         clearInterval(timer);
     });
+    clearInterval(mainInterval);
+    schedules = [];
     text('Old schedules cleared');
 }
 
 function startMainInterval() {
     loadSchedules();
-    setInterval(function() {
+    mainInterval = setInterval(function() {
         loadSchedules();
         checkTimed();
     }, checkNewSchedules * second);
@@ -256,9 +291,6 @@ function setCurrentDate() {
 setCurrentDate();
 
 rconConnect()
-    .then(function () {
-        startMainInterval();
-    })
     .catch(function (error) {
         console.error('Error:', error);
     })

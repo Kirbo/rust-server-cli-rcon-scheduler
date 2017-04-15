@@ -96,7 +96,7 @@ To be more precise, here are the examples:
         "until": "2017-12-24 23:59:59"
     }
 
-### `after` and `until` can handle asterisks also, you can set for example: 
+### `after` and `until` can handle Wildcards also, you can set for example: 
 
 #### Execute only once per day after 15:00, every day on july 2017, until 20th of july 18:00:
 
